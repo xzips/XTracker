@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
+
+
 sf::Image extract_rectangle_as_image(sf::Texture &tex, size_t center_x, size_t center_y, size_t rect_width, size_t rect_height)
 {
     sf::Image extracted_image;
@@ -39,17 +42,7 @@ sf::Image extract_rectangle_as_image(sf::Texture &tex, size_t center_x, size_t c
         memcpy(dst_addr, original_image_p_buffer + row_begin_indx, 4 * rect_width);
 
         cur_loc_in_extr_pix += rect_width * 4;
-
-        /*
-        sf::Uint8 red = pByteBuffer[4 * i];
-        sf::Uint8 green = pByteBuffer[4 * i + 1];
-        sf::Uint8 blue = pByteBuffer[4 * i + 2];
-        sf::Uint8 alpha = pByteBuffer[4 * i + 3];
-        */
     }
-
-    
-
     
     extracted_image.create(rect_width, rect_height, extracted_image_pixels);
     free(extracted_image_pixels);
@@ -58,71 +51,74 @@ sf::Image extract_rectangle_as_image(sf::Texture &tex, size_t center_x, size_t c
 
 }
 
-
-void add_bounding_rectangle(sf::Texture& tex, uint32_t rectangle_origin_x, uint32_t rectangle_origin_y,
-    uint32_t rect_width, uint32_t rect_height, uint32_t thickness)
+sf::Uint8* extract_rectangle_pixels_from_image(sf::Image& full_image, size_t center_x, size_t center_y, size_t rect_width, size_t rect_height)
 {
-    sf::Image image = tex.copyToImage();
+    sf::Image extracted_image;
 
-    // Optional show case: read size of image (not used in this function)
-    int width = image.getSize().x;
-    int height = image.getSize().y;
-
-    // Get color of specific position
-    //sf::Color imagecolor = image.getPixel(x, y);
+    //fix this lol
+    center_x -= rect_width >> 1;
+    center_y -= rect_height >> 1;
 
 
-
-
-    // Update texture
-
-
-    tex.loadFromImage(image);
-
-
-    sf::Color color = sf::Color::Magenta;
-    //top bar
-    for (int t = 0; t < thickness; t++)
+    //check this
+    size_t extracted_img_buff_sz = sizeof(sf::Uint8) * rect_width * rect_height * 4;
+    sf::Uint8* extracted_image_pixels = (sf::Uint8*)malloc(extracted_img_buff_sz);
+    if (extracted_image_pixels == nullptr)
     {
-        for (int x = 0; x < rect_width; x++)
-        {
-            image.setPixel(x + rectangle_origin_x, rectangle_origin_y + t, color);
-        }
-
+        std::cout << "somebody(I) fucked up memory management and now we can't have nice things, contact the dev" << std::endl;
     }
 
-    //lower bar
-    for (int t = 0; t < thickness; t++)
+    const sf::Uint8* original_image_p_buffer = full_image.getPixelsPtr();
+
+    size_t cur_loc_in_extr_pix = 0;
+
+    size_t numPixels = full_image.getSize().x * full_image.getSize().y * 4;
+    //for each row, find out where the fuck we are and memcpy pixels 
+    for (size_t row = 0; row < rect_height; ++row)
     {
-        for (int x = 0; x < rect_width; x++)
-        {
-            image.setPixel(x + rectangle_origin_x, rectangle_origin_y + t + rect_height, color);
-        }
+        size_t row_begin_indx = ((row + center_y) * full_image.getSize().x + center_x) * 4;
 
+
+        sf::Uint8* dst_addr = extracted_image_pixels + cur_loc_in_extr_pix;
+
+        if (dst_addr == nullptr) exit(-1);
+
+        memcpy(dst_addr, original_image_p_buffer + row_begin_indx, 4 * rect_width);
+
+        cur_loc_in_extr_pix += rect_width * 4;
     }
-    //left bar
-    for (int t = 0; t < thickness; t++)
+
+    //REMEMBER TO FREE THIS SHIT CUHHH
+    return extracted_image_pixels;
+
+}
+
+double images_mean_difference(sf::Image img_a, sf::Image img_b)
+{
+    if (img_a.getSize() != img_b.getSize())
     {
-        for (int y = 0; y < rect_height; y++)
-        {
-            image.setPixel(rectangle_origin_x + t, y + rectangle_origin_y, color);
-        }
-
+        std::cout << "can't get similarity of different sized images, you silly goose, contact dev" << std::endl;
+        exit(-1);
     }
-    //right bar
-    for (int t = 0; t < thickness; t++)
+
+    //maybe do this for debugging
+    size_t extracted_img_buff_sz = sizeof(sf::Uint8) * img_a.getSize().x * img_a.getSize().y * 4;
+    //sf::Uint8* extracted_image_pixels = (sf::Uint8*)malloc(extracted_img_buff_sz);
+    std::cout << "img_buff_sz: " << extracted_img_buff_sz << "\n";
+
+    const sf::Uint8* img_a_px_ptr = img_a.getPixelsPtr();
+    const sf::Uint8* img_b_px_ptr = img_b.getPixelsPtr();
+
+    uint64_t absolute_difference_sum = 0;
+    for (size_t i = 0; i<extracted_img_buff_sz; i++)
     {
-        for (int y = 0; y < rect_height; y++)
-        {
-            image.setPixel(rectangle_origin_x + t + rect_width, y + rectangle_origin_y, color);
-        }
+        int32_t img_a_px = img_a_px_ptr[i];
+        int32_t img_b_px = img_b_px_ptr[i];
 
+        //mean squared erorr
+        absolute_difference_sum += abs(img_a_px - img_b_px);
     }
-    tex.loadFromImage(image);
 
-
-
-
-
-
+    double avg_diff = (double)absolute_difference_sum / (double)extracted_img_buff_sz;
+    return avg_diff;
 }
