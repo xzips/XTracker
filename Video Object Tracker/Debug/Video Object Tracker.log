@@ -1,0 +1,16 @@
+﻿  Video Object Tracker.cpp
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(85,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(87,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(95,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(97,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(104,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(106,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(113,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\image_pixel_manipulation.h(115,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\Video Object Tracker.cpp(52,32): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\Video Object Tracker.cpp(52,24): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\Video Object Tracker.cpp(55,95): warning C4244: 'argument': conversion from 'float' to 'size_t', possible loss of data
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\Video Object Tracker.cpp(55,87): warning C4244: 'argument': conversion from 'float' to 'size_t', possible loss of data
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\Video Object Tracker.cpp(65,91): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Aspen\source\repos\Video Object Tracker\Video Object Tracker\Video Object Tracker.cpp(71,87): warning C4305: 'argument': truncation from 'double' to 'float'
+  Video Object Tracker.vcxproj -> C:\Users\Aspen\source\repos\Video Object Tracker\Debug\Video Object Tracker.exe
