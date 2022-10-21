@@ -23,5 +23,8 @@
     <ClInclude Include="image_pixel_manipulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="test_mouse_dragging_code.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

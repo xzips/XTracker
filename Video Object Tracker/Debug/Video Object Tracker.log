@@ -1,14 +1,5 @@
 ﻿  Video Object Tracker.cpp
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(40,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(151,32): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(151,24): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(152,114): warning C4244: 'argument': conversion from 'float' to 'size_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(152,106): warning C4244: 'argument': conversion from 'float' to 'size_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(156,108): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(156,100): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(178,91): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(185,87): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(192,94): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(230,90): warning C4244: 'argument': conversion from 'float' to 'size_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(230,82): warning C4244: 'argument': conversion from 'float' to 'size_t', possible loss of data
-  Video Object Tracker.vcxproj -> C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Debug\Video Object Tracker.exe
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(40,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(80,91): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(103,87): warning C4305: 'argument': truncation from 'double' to 'float'
+  Video Object Tracker.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\Video Object Tracker.exe
