@@ -39,7 +39,7 @@ void draw_img_in(sf::Image img)
     }
 }
 
-sf::Image extract_rectangle_as_image(sf::Texture &tex, size_t center_x, size_t center_y, size_t rect_width, size_t rect_height)
+sf::Image extract_rectangle_as_image(const sf::Texture &tex, size_t center_x, size_t center_y, size_t rect_width, size_t rect_height)
 {
     sf::Image extracted_image;
     sf::Image full_image = tex.copyToImage();
@@ -85,6 +85,32 @@ sf::Image extract_rectangle_as_image(sf::Texture &tex, size_t center_x, size_t c
     return extracted_image;
 
 }
+
+
+
+
+void draw_rectangle_border(sf::RenderWindow& wind, float scaling_factor, size_t img_center_x,
+    size_t img_center_y, size_t width_px, size_t height_px, size_t thickness, sf::Color col)
+{
+    sf::RectangleShape rect;
+
+
+    //fix this
+
+    img_center_x = img_center_x - width_px / 2 + thickness;
+    img_center_y = img_center_y - height_px / 2 + thickness;
+
+    rect.setPosition(img_center_x * scaling_factor, img_center_y * scaling_factor);
+
+    rect.setSize(sf::Vector2f(width_px * scaling_factor, height_px * scaling_factor));
+    rect.setFillColor(sf::Color::Transparent);
+    rect.setOutlineColor(col);
+    rect.setOutlineThickness(thickness);
+    wind.draw(rect);
+}
+
+
+
 
 sf::Uint8* extract_rectangle_pixels_from_image(sf::Image& full_image, size_t center_x, size_t center_y, size_t rect_width, size_t rect_height)
 {
@@ -265,22 +291,42 @@ sf::Vector2i search_region_for_match(sf::Image& base_image, sf::Image& target_te
     double smallest_difference = INFINITY;
     sf::Image section_extracted_img;
 
-    for (int i = 0; i < 1; i++)
+    size_t x_seg_cnt = 100;
+    size_t y_seg_cnt = 100;
+
+    float x_seg_px_width = (float)region_width / (float)x_seg_cnt;
+    float y_seg_px_height = (float)region_height / (float)y_seg_cnt;
+
+
+    size_t search_begin_x = region_center_x - region_width / 2;
+    size_t search_begin_y = region_center_y - region_height / 2; 
+
+    for (int x_segment_idx = 0; x_segment_idx < x_seg_cnt; x_segment_idx++)
     {
-        size_t compare_x_offset = 0;
-        size_t compare_y_offset = 0;
-
-        double cur_diff = difference_metric_at_pos(
-            base_image, target_template, region_center_x + compare_x_offset,
-            region_center_y + compare_y_offset,
-            region_width, region_height);
-
-        if (cur_diff < smallest_difference)
+        for (int y_segment_idx = 0; y_segment_idx < y_seg_cnt; y_segment_idx++)
         {
-            smallest_difference = cur_diff;
+            int32_t compare_x_pos = search_begin_x + x_seg_px_width * x_segment_idx;
+            int32_t compare_y_pos = search_begin_y + y_seg_px_height * y_segment_idx;
+          //  std::cout << "Checking: (" << region_center_x + compare_x_offset << ", " << region_center_y + compare_y_offset << ")\n";
 
-            best_match_center_position = sf::Vector2i(region_center_x + compare_x_offset, region_center_y + compare_y_offset);
+            double cur_diff = difference_metric_at_pos(
+                base_image, target_template,
+                compare_x_pos, 
+                compare_y_pos,
+                target_template.getSize().x,
+                target_template.getSize().y);
+
+            if (cur_diff < smallest_difference)
+            {
+                smallest_difference = cur_diff;
+
+                //std::cout << "New Best Match: " << cur_diff << "\n";
+                best_match_center_position = sf::Vector2i(
+                    compare_x_pos,
+                    compare_y_pos);
+            }
         }
+     
     }
     std::cout << "Match Difference: " << smallest_difference << "\n";
     return best_match_center_position;

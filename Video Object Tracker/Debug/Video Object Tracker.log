@@ -1,5 +1,9 @@
 ﻿  Video Object Tracker.cpp
-C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(40,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
-C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(80,91): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(103,87): warning C4305: 'argument': truncation from 'double' to 'float'
-  Video Object Tracker.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\Video Object Tracker.exe
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(108,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(304,47): warning C4018: '<': signed/unsigned mismatch
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(306,51): warning C4018: '<': signed/unsigned mismatch
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(308,35): warning C4244: 'initializing': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(309,35): warning C4244: 'initializing': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(110,85): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(133,87): warning C4305: 'argument': truncation from 'double' to 'float'
+  Video Object Tracker.vcxproj -> C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Debug\Video Object Tracker.exe
