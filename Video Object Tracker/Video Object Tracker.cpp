@@ -66,6 +66,51 @@ void load_png_sequence_to_frames(std::string pathname_without_number_or_extensio
 }
 
 
+struct Histogram
+{
+    uint32_t* raw_buckets;
+    size_t n_buckets;
+    size_t n_buckets_power_of_2;
+
+    Histogram(size_t n_buckets_power_of_2)
+    {
+        this->n_buckets_power_of_2 = n_buckets_power_of_2;
+        this->n_buckets = 1 << n_buckets_power_of_2;
+        raw_buckets = (uint32_t*)malloc(sizeof(uint32_t*) * n_buckets * 3); // * 3 for RGB
+        if (raw_buckets == nullptr) { printf("Histogram bucket init malloc failed, contact dev");  exit(-1); }
+        for (size_t i = 0; i < n_buckets; i++) raw_buckets[i] = 0;
+    }
+    /*
+    Logic is basically as follows:
+    we want to place each color from 0-255 into a bucket index according to which one it fits into
+    dividing is probably the fastest way to acomplish this, but if we restrict our bucket
+    scaling to a power of 2, we can use shifting instead, and get a perfectly fine result too
+
+    4 buckets
+
+     [0]    [1]    [2]    [3]
+    0 0 0, 0 0 0, 0 0 0, 0 0 0
+                  ^
+    for example, red 160 should go into index 6, lets see if thats the case:
+    8 - nbp2 = 8 - 2 = 6
+
+    160 >> 6 = 2
+
+    2 * 3 + 0 = 6, good!
+
+
+    */
+    void add_color_to_buckets(sf::Uint8 r, sf::Uint8 g, sf::Uint8 b)
+    {
+        raw_buckets[(r >> (8 - n_buckets_power_of_2)) * 3 + 0] += 1;
+        raw_buckets[(g >> (8 - n_buckets_power_of_2)) * 3 + 1] += 1;
+        raw_buckets[(b >> (8 - n_buckets_power_of_2)) * 3 + 2] += 1;
+    }
+
+    
+};
+
+
 
 int main()
 
@@ -145,8 +190,8 @@ int main()
     sf::Vector2i search_region_center(390, 470);
     sf::Vector2i search_region_size(200, 150);
 
-    sf::Vector2i template_center(395, 460);
-    sf::Vector2i template_size(30, 30);
+    sf::Vector2i template_center(400, 480);
+    sf::Vector2i template_size(20, 20);
 
 
 
