@@ -154,6 +154,7 @@ sf::Uint8* extract_rectangle_pixels_from_image(sf::Image& full_image, size_t cen
 
 }
 
+
 double images_mean_difference(sf::Image img_a, sf::Image img_b)
 {
     if (img_a.getSize() != img_b.getSize())
@@ -190,6 +191,12 @@ sf::Uint8 abs_pixel_difference_raw(sf::Uint8 p0, sf::Uint8 p1)
     sf::Uint8 diff = std::max(255 - abs((int32_t)p0 - (int32_t)p1), 127);
     return diff;
 }
+
+
+
+
+
+
 
 sf::Image difference_image_at_pos(sf::Image& base_image, sf::Image compare_template,
     uint32_t center_x, uint32_t center_y, uint32_t rect_width, uint32_t rect_height)
@@ -289,6 +296,101 @@ double difference_metric_at_pos(sf::Image& base_image, sf::Image &compare_templa
 
 }
 
+
+
+
+struct Histogram
+{
+    uint32_t* raw_buckets;
+    size_t n_buckets;
+    size_t n_buckets_power_of_2;
+
+    Histogram(size_t n_buckets_power_of_2)
+    {
+        this->n_buckets_power_of_2 = n_buckets_power_of_2;
+        this->n_buckets = 1 << n_buckets_power_of_2;
+        raw_buckets = (uint32_t*)malloc(sizeof(uint32_t*) * n_buckets * 3); // * 3 for RGB
+        if (raw_buckets == nullptr) { printf("Histogram bucket init malloc failed, contact dev");  exit(-1); }
+        for (size_t i = 0; i < n_buckets; i++) raw_buckets[i] = 0;
+    }
+
+    void add_color_to_buckets(sf::Uint8 r, sf::Uint8 g, sf::Uint8 b)
+    {
+        raw_buckets[(r >> (8 - n_buckets_power_of_2)) * 3 + 0] += 1;
+        raw_buckets[(g >> (8 - n_buckets_power_of_2)) * 3 + 1] += 1;
+        raw_buckets[(b >> (8 - n_buckets_power_of_2)) * 3 + 2] += 1;
+    }
+
+    void normalize_hist_to_255()
+    {
+        uint32_t max_r = 0;
+        for (size_t i = 0; i < n_buckets; i++)
+        {
+            if (raw_buckets[i] > max_r) max_r = raw_buckets[i];
+        }
+
+        //max g max b .....
+
+
+    }
+};
+
+
+
+
+double average_histogram_difference(hist_a, hist_b)
+
+
+double histogram_difference_metric_at_pos(sf::Image& base_image, sf::Image& compare_template,
+    uint32_t center_x, uint32_t center_y, uint32_t rect_width, uint32_t rect_height)
+{
+    //return compare_template;
+    size_t compare_imgs_sz = sizeof(sf::Uint8) * compare_template.getSize().x * compare_template.getSize().y * 4;
+
+    //THIS MUST BE FREED LATER!!!!!
+    //EXPERIMENT WITH USING IMAGE INSTEAD OF PIXELS???
+    sf::Uint8* cropped_base_pixels = extract_rectangle_pixels_from_image(base_image,
+        center_x, center_y, rect_width, rect_height);
+
+    const sf::Uint8* tplt_pixels_ptr = compare_template.getPixelsPtr();
+
+
+
+    sf::Image cropped_base_pix_img;
+    cropped_base_pix_img.create(rect_width, rect_height, cropped_base_pixels);
+
+
+    Histogram hist_a(5);
+    Histogram hist_b(5);
+
+
+    size_t sum_px_diff = 0;
+    for (size_t i = 0; i < compare_imgs_sz; i += 4)
+    {
+
+        hist_a.add_color_to_buckets(
+            tplt_pixels_ptr[i] + 0,
+            tplt_pixels_ptr[i] + 1,
+            tplt_pixels_ptr[i] + 2);
+
+        hist_b.add_color_to_buckets(
+            cropped_base_pixels[i] + 0,
+            cropped_base_pixels[i] + 1,
+            cropped_base_pixels[i] + 2);
+    }
+
+    
+    double avg_hist_diff = average_histogram_difference(hist_a, hist_b);
+    
+    //necessary asf
+    free(cropped_base_pixels);
+    free(hist_a.raw_buckets);
+    free(hist_b.raw_buckets);
+
+
+    return (double)sum_px_diff / (double)compare_imgs_sz;
+
+}
 
 
 
