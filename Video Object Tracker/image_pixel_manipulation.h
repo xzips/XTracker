@@ -241,6 +241,12 @@ sf::Image difference_image_at_pos(sf::Image& base_image, sf::Image compare_templ
 }
 
 
+sf::Uint8 square_pixel_difference_f(sf::Uint8 p0, sf::Uint8 p1)
+{
+    sf::Uint8 diff = abs((((int32_t)p0 - (int32_t)p1) * ((int32_t)p0 - (int32_t)p1)) >> 8);
+    return diff;
+}
+
 
 double difference_metric_at_pos(sf::Image& base_image, sf::Image &compare_template,
     uint32_t center_x, uint32_t center_y, uint32_t rect_width, uint32_t rect_height)
@@ -268,9 +274,12 @@ double difference_metric_at_pos(sf::Image& base_image, sf::Image &compare_templa
     for (size_t i = 0; i < compare_imgs_sz; i += 4)
     {
         //just rgb and skip alpha
-        sum_px_diff += abs(tplt_pixels_ptr[i] - cropped_base_pixels[i]);
-        sum_px_diff += abs(tplt_pixels_ptr[i+1] - cropped_base_pixels[i+1]);
-        sum_px_diff += abs(tplt_pixels_ptr[i+2] - cropped_base_pixels[i+2]);
+        sum_px_diff += square_pixel_difference_f(tplt_pixels_ptr[i],cropped_base_pixels[i]);
+        //sum_px_diff += abs(tplt_pixels_ptr[i] - cropped_base_pixels[i]);
+        sum_px_diff += square_pixel_difference_f(tplt_pixels_ptr[i+1], cropped_base_pixels[i+1]);
+       // sum_px_diff += abs(tplt_pixels_ptr[i+1] - cropped_base_pixels[i+1]);
+        sum_px_diff += square_pixel_difference_f(tplt_pixels_ptr[i+2], cropped_base_pixels[i+2]);
+       // sum_px_diff += abs(tplt_pixels_ptr[i+2] - cropped_base_pixels[i+2]);
     }
 
     free(cropped_base_pixels);
@@ -291,8 +300,8 @@ sf::Vector2i search_region_for_match(sf::Image& base_image, sf::Image& target_te
     double smallest_difference = INFINITY;
     sf::Image section_extracted_img;
 
-    size_t x_seg_cnt = 100;
-    size_t y_seg_cnt = 100;
+    size_t x_seg_cnt = 50;
+    size_t y_seg_cnt = 50;
 
     float x_seg_px_width = (float)region_width / (float)x_seg_cnt;
     float y_seg_px_height = (float)region_height / (float)y_seg_cnt;

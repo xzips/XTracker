@@ -2,8 +2,8 @@
 #include <iostream>
 #include "image_pixel_manipulation.h"
 #include <vector>
-constexpr size_t WINDOW_WIDTH = 1200;
-constexpr size_t WINDOW_HEIGHT = 700;
+constexpr size_t WINDOW_WIDTH = 1900;
+constexpr size_t WINDOW_HEIGHT = 1200;
 
 
 //returns scale ratio used
@@ -67,29 +67,35 @@ void load_png_sequence_to_frames(std::string pathname_without_number_or_extensio
 
 
 
-
 int main()
 
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "XTracker");
 
-    std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
+   // std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
+    std::string base_filename = "C:/Users/Aspen/Desktop/XTracker/PendulumFrames/pendulum_frame_";
     
-    size_t total_n_frames = 10;
+    size_t total_n_frames = 25;
 
     load_png_sequence_to_frames(base_filename, total_n_frames);
     
 
     //sf::Texture CurrentFrameTexture;
     sf::Sprite  CurrentFrameSprite;
+    sf::Sprite  CurrentTemplateSprite;
 
     //draw_img_in(frames_img_array[0]);
 
     CurrentFrameSprite.setTexture(frames_tex_array[0]);
 
     float CurrentFrameScale = scale_sprite_to_params(CurrentFrameSprite, frames_tex_array[0], 0.8, 1);
-
    
+    
+
+
+
+
+
     /*
 
 
@@ -136,11 +142,25 @@ int main()
    // bool right_pressed = false;
     size_t current_frame_idx = 0;
 
-    sf::Vector2i search_region_center(215, 250);
-    sf::Vector2i search_region_size(40, 40);
+    sf::Vector2i search_region_center(390, 470);
+    sf::Vector2i search_region_size(200, 150);
 
-    sf::Vector2i template_center(215, 250);
-    sf::Vector2i template_size(200, 150);
+    sf::Vector2i template_center(395, 460);
+    sf::Vector2i template_size(30, 30);
+
+
+
+    //make into function maybe
+    sf::Image rect_img = extract_rectangle_as_image(frames_tex_array[0], template_center.x, template_center.y,
+        template_size.x, template_size.y);
+
+    sf::Texture cropped_tex;
+    cropped_tex.create(template_size.x, template_size.y);
+    cropped_tex.loadFromImage(rect_img);
+    sf::Sprite extracted_sprite;
+    float extract_scale = scale_sprite_to_params(extracted_sprite, cropped_tex, 0.2, 1);
+    extracted_sprite.setTexture(cropped_tex);
+    extracted_sprite.setPosition(WINDOW_WIDTH - extract_scale * template_size.x, 0);
 
 
 
@@ -172,6 +192,24 @@ int main()
                
                 CurrentFrameSprite.setTexture(frames_tex_array[current_frame_idx]);
 
+
+                template_center = search_region_for_match(
+                    frames_img_array[current_frame_idx - 1], rect_img,
+                    template_center.x, template_center.y, search_region_size.x, search_region_size.y);
+
+                search_region_center = template_center;
+
+                //set new
+                //rect_img = extract_rectangle_as_image(frames_tex_array[current_frame_idx], template_center.x, template_center.y,
+                //   template_size.x, template_size.y);
+
+               // cropped_tex.create(template_size.x, template_size.y);
+               // cropped_tex.loadFromImage(rect_img);
+                //extracted_sprite.setTexture(cropped_tex);
+               // extracted_sprite.setPosition(WINDOW_WIDTH - extract_scale * template_size.x, 0);
+
+
+
             }
             right_pressed = true;
         }
@@ -183,10 +221,10 @@ int main()
 
         window.clear();
         window.draw(CurrentFrameSprite);
-        //window.draw(extracted_sprite);
+        window.draw(extracted_sprite);
 
-        //draw_rectangle_border(window, frame_scale, best_position.x, best_position.y, crop_x, crop_y, 3, sf::Color::Red);
-        //draw_rectangle_border(window, frame_scale, search_center_x, search_center_y, search_width, search_height, 3, sf::Color::Blue);
+        draw_rectangle_border(window, CurrentFrameScale, template_center.x, template_center.y, template_size.x, template_size.y, 3, sf::Color::Red);
+        draw_rectangle_border(window, CurrentFrameScale, search_region_center.x, search_region_center.y, search_region_size.x, search_region_size.y, 3, sf::Color::Blue);
 
         window.display();
     }
