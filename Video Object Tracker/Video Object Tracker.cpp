@@ -37,23 +37,27 @@ sf::Vector2i track_template_into_frame(sf::Image& track_template, sf::Image& cur
 
 
 //ugly globals :(
-
-std::vector <sf::Image> frames_img_array;
 std::vector <sf::Texture> frames_tex_array;
+std::vector <sf::Image>   frames_img_array;
+
+
+
 
 
 //takes a path like desktop/video_frames/frame_
 //DO NOT GIVE THIS FUNCTION SOMETHING LIKE: desktop/video_frames/frame_0.png
 void load_png_sequence_to_frames(std::string pathname_without_number_or_extension, size_t n_frames)
 {
-    frames_img_array.push_back(sf::Image());
-    frames_tex_array.push_back(sf::Texture());
 
     for (size_t i = 0; i < n_frames; i++)
     {
+        frames_img_array.push_back(sf::Image());
+        frames_tex_array.push_back(sf::Texture());
+
+
         std::string current_image_name = pathname_without_number_or_extension + std::to_string(i) + ".png";
         if (!frames_img_array[frames_img_array.size() - 1].loadFromFile(current_image_name)
-            || !frames_img_array[frames_img_array.size() - 1].loadFromFile(current_image_name))
+            || !frames_tex_array[frames_img_array.size() - 1].loadFromFile(current_image_name))
         {
             std::cout << current_image_name << " failed to load\n";
             exit(-1);
@@ -65,44 +69,28 @@ void load_png_sequence_to_frames(std::string pathname_without_number_or_extensio
 
 
 int main()
+
 {
-    sf::Texture frame_0_texture;
-    sf::Image frame_0_image;
-
-    sf::Texture frame_1_texture;
-    sf::Image frame_1_image;
-
-
-
-    //C:/Users/aspen/Desktop/firmware-onboarding/XTracker/frame_0.png
-    //C:/Users/Aspen/Desktop/TrackerX/frame_0.png
-    std::string frame_0_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/frame_0.png";
-    std::string frame_1_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/frame_1.png";
-    //std::string filename = "C:\\Users\\Aspen\\Desktop\\XTracker\\frame_0.png";
-
-    if (!frame_0_texture.loadFromFile(frame_0_filename) || !frame_0_image.loadFromFile(frame_0_filename))
-    {
-        std::cout << "frame_0.png failed to load\n";
-        exit(-1);
-    }
-
-
-
-    if (!frame_1_texture.loadFromFile(frame_1_filename) || !frame_1_image.loadFromFile(frame_1_filename))
-    {
-        std::cout << "frame_1.png failed to load\n";
-        exit(-1);
-    }
-
-
-
-
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "XTracker");
 
+    std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
+    
+    size_t total_n_frames = 10;
 
+    load_png_sequence_to_frames(base_filename, total_n_frames);
+    
 
-  
- 
+    //sf::Texture CurrentFrameTexture;
+    sf::Sprite  CurrentFrameSprite;
+
+    //draw_img_in(frames_img_array[0]);
+
+    CurrentFrameSprite.setTexture(frames_tex_array[0]);
+
+    float CurrentFrameScale = scale_sprite_to_params(CurrentFrameSprite, frames_tex_array[0], 0.8, 1);
+
+   
+    /*
 
 
     sf::Sprite frame_sprite;
@@ -141,6 +129,22 @@ int main()
 
     std::cout << "Best X: " << best_position.x << " ,Best Y: " << best_position.y << "\n";
 
+    */
+
+    bool right_pressed = false;
+    bool left_clicked = false;
+   // bool right_pressed = false;
+    size_t current_frame_idx = 0;
+
+    sf::Vector2i search_region_center(215, 250);
+    sf::Vector2i search_region_size(40, 40);
+
+    sf::Vector2i template_center(215, 250);
+    sf::Vector2i template_size(200, 150);
+
+
+
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -153,27 +157,42 @@ int main()
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 {
                     window.close();
-               }
+                }
+
             }
         }
 
 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            if (right_pressed == false && current_frame_idx < total_n_frames - 1)
+            {
+                current_frame_idx++;
+                std::cout << "Frame Advanced to: " << current_frame_idx << std::endl;
+               
+                CurrentFrameSprite.setTexture(frames_tex_array[current_frame_idx]);
+
+            }
+            right_pressed = true;
+        }
+        else right_pressed = false;
+
+        
 
      
 
-
-
-
-
         window.clear();
-        window.draw(frame_sprite);
-        window.draw(extracted_sprite);
+        window.draw(CurrentFrameSprite);
+        //window.draw(extracted_sprite);
 
-        draw_rectangle_border(window, frame_scale, best_position.x, best_position.y, crop_x, crop_y, 3, sf::Color::Red);
-        draw_rectangle_border(window, frame_scale, search_center_x, search_center_y, search_width, search_height, 3, sf::Color::Blue);
+        //draw_rectangle_border(window, frame_scale, best_position.x, best_position.y, crop_x, crop_y, 3, sf::Color::Red);
+        //draw_rectangle_border(window, frame_scale, search_center_x, search_center_y, search_width, search_height, 3, sf::Color::Blue);
 
         window.display();
     }
 
+
+    frames_tex_array.clear();
+    frames_img_array.clear();
     return 0;
 }
