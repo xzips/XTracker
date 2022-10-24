@@ -72,10 +72,10 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "XTracker");
 
-    std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
-    //std::string base_filename = "C:/Users/Aspen/Desktop/XTracker/PendulumFrames/pendulum_frame_";
+    //std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
+    std::string base_filename = "C:/Users/Aspen/Desktop/XTracker/PendulumFrames/pendulum_frame_";
     
-    size_t total_n_frames = 25;
+    size_t total_n_frames = 30;
 
     load_png_sequence_to_frames(base_filename, total_n_frames);
     
@@ -94,49 +94,6 @@ int main()
 
 
 
-
-
-    /*
-
-
-    sf::Sprite frame_sprite;
-    frame_sprite.setTexture(frame_1_texture);
-    float frame_scale = scale_sprite_to_params(frame_sprite, frame_1_texture, 0.8, 1);
-
-    uint32_t crop_center_x = 215;
-    uint32_t crop_center_y = 250;
-    uint32_t crop_x = 30;
-    uint32_t crop_y = 30;
-
-
-    uint32_t search_center_x = 210;
-    uint32_t search_center_y = 250;
-    uint32_t search_width = 250;
-    uint32_t search_height = 150;
-   
-
-    sf::Image rect_img = extract_rectangle_as_image(frame_0_texture, crop_center_x, crop_center_y, crop_x, crop_y);
-
-    sf::Texture cropped_tex;
-    cropped_tex.create(crop_x, crop_y);
-    cropped_tex.loadFromImage(rect_img);
-
-
-
-    sf::Sprite extracted_sprite;
-    float extract_scale = scale_sprite_to_params(extracted_sprite, cropped_tex, 0.2, 1);
-    extracted_sprite.setTexture(cropped_tex);
-    extracted_sprite.setPosition(WINDOW_WIDTH - extract_scale * crop_x, 0);
-
-
-    sf::Vector2i best_position = search_region_for_match(
-        frame_1_image, rect_img, crop_center_x,
-        crop_center_y, search_width, search_height);
-
-    std::cout << "Best X: " << best_position.x << " ,Best Y: " << best_position.y << "\n";
-
-    */
-
     bool right_pressed = false;
     bool left_clicked = false;
    // bool right_pressed = false;
@@ -145,7 +102,9 @@ int main()
     sf::Vector2i search_region_center(390, 470);
     sf::Vector2i search_region_size(200, 150);
 
+    //400, 480
     sf::Vector2i template_center(400, 480);
+    //20, 20
     sf::Vector2i template_size(20, 20);
 
 
@@ -185,7 +144,8 @@ int main()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            if (right_pressed == false && current_frame_idx < total_n_frames - 1)
+            //if (right_pressed == false && current_frame_idx < total_n_frames - 1)
+            if (true && current_frame_idx < total_n_frames - 1)
             {
                 current_frame_idx++;
                 std::cout << "Frame Advanced to: " << current_frame_idx << std::endl;
@@ -194,7 +154,7 @@ int main()
 
 
                 template_center = search_region_for_match(
-                    frames_img_array[current_frame_idx - 1], rect_img,
+                    frames_img_array[current_frame_idx], rect_img,
                     template_center.x, template_center.y, search_region_size.x, search_region_size.y);
 
                 search_region_center = template_center;

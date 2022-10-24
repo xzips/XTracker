@@ -1,15 +1,9 @@
 ﻿  Video Object Tracker.cpp
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(108,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(327,41): error C2143: syntax error: missing ';' before ')'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(337,37): error C2065: 'hist_a': undeclared identifier
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(337,45): error C2065: 'hist_b': undeclared identifier
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(337,51): error C2440: 'initializing': cannot convert from 'initializer list' to 'double'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(337,36): message : The initializer contains too many elements
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(340,1): error C2144: syntax error: 'double' should be preceded by ';'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(379,28): error C2064: term does not evaluate to a function taking 2 arguments
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(411,47): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(413,51): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(415,35): warning C4244: 'initializing': conversion from 'float' to 'int32_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\image_pixel_manipulation.h(416,35): warning C4244: 'initializing': conversion from 'float' to 'int32_t', possible loss of data
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(91,101): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\aspen\Desktop\firmware-onboarding\XTracker\Video Object Tracker\Video Object Tracker.cpp(161,87): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\image_pixel_manipulation.h(108,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\image_pixel_manipulation.h(473,47): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\image_pixel_manipulation.h(475,51): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\image_pixel_manipulation.h(477,35): warning C4244: 'initializing': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\image_pixel_manipulation.h(478,35): warning C4244: 'initializing': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(91,101): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker\Video Object Tracker.cpp(120,87): warning C4305: 'argument': truncation from 'double' to 'float'
+  Video Object Tracker.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\Video Object Tracker.exe

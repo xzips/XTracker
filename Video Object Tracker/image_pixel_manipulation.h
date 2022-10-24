@@ -309,40 +309,88 @@ struct Histogram
     {
         this->n_buckets_power_of_2 = n_buckets_power_of_2;
         this->n_buckets = 1 << n_buckets_power_of_2;
-        raw_buckets = (uint32_t*)malloc(sizeof(uint32_t*) * n_buckets * 3); // * 3 for RGB
+        raw_buckets = (uint32_t*)malloc(sizeof(uint32_t) * n_buckets * 3); // * 3 for RGB
         if (raw_buckets == nullptr) { printf("Histogram bucket init malloc failed, contact dev");  exit(-1); }
-        for (size_t i = 0; i < n_buckets; i++) raw_buckets[i] = 0;
+        for (size_t i = 0; i < n_buckets * 3; i++) raw_buckets[i] = 0;
     }
+
 
     void add_color_to_buckets(sf::Uint8 r, sf::Uint8 g, sf::Uint8 b)
     {
-        raw_buckets[(r >> (8 - n_buckets_power_of_2)) * 3 + 0] += 1;
+
+        size_t r_idx = (r >> (8 - n_buckets_power_of_2)) * 3 + 0;
+        raw_buckets[r_idx] += 1;
         raw_buckets[(g >> (8 - n_buckets_power_of_2)) * 3 + 1] += 1;
         raw_buckets[(b >> (8 - n_buckets_power_of_2)) * 3 + 2] += 1;
     }
 
-    void normalize_hist_to_255()
+    void normalize_to_255()
     {
         uint32_t max_r = 0;
+        uint32_t max_g = 0;
+        uint32_t max_b = 0;
+
+        for (size_t i = 0; i < n_buckets; i++)  if (raw_buckets[i * 3 + 0] > max_r) max_r = raw_buckets[i * 3 + 0];
+        for (size_t i = 0; i < n_buckets; i++)  if (raw_buckets[i * 3 + 1] > max_g) max_g = raw_buckets[i * 3 + 1];
+        for (size_t i = 0; i < n_buckets; i++)  if (raw_buckets[i * 3 + 2] > max_b) max_b = raw_buckets[i * 3 + 2];
+   
+
+        for (size_t i = 0; i < n_buckets; i++) raw_buckets[i * 3 + 0] = (raw_buckets[i * 3 + 0] * 255) / max_r;
+        for (size_t i = 0; i < n_buckets; i++) raw_buckets[i * 3 + 1] = (raw_buckets[i * 3 + 1] * 255) / max_g;
+        for (size_t i = 0; i < n_buckets; i++) raw_buckets[i * 3 + 2] = (raw_buckets[i * 3 + 2] * 255) / max_b;
+    }
+
+    void draw_in_console_r()
+    {
+        std::cout << "----- HISTOGRAM BEGIN -----\n";
+        size_t width_divisor = 6;
+        normalize_to_255();
         for (size_t i = 0; i < n_buckets; i++)
         {
-            if (raw_buckets[i] > max_r) max_r = raw_buckets[i];
+            std::string current_line = "";
+            for (size_t j = 0; j < raw_buckets[i * 3]/width_divisor; j++)
+            {
+                current_line += "#";
+            }
+            std::cout << current_line << "\n";     
         }
+        std::cout << "----- HISTOGRAM END -----\n";
 
-        //max g max b .....
-
-
+        std::cout << std::endl;
     }
 };
 
 
 
 
-double average_histogram_difference(hist_a, hist_b)
+double average_histogram_difference(Histogram hist_a, Histogram hist_b, bool draw_hist = false)
+{
+    if (!(hist_a.n_buckets == hist_b.n_buckets))
+    {
+         printf("Hist bucket count mismatch"); exit(-1);
+    }
+
+    hist_a.normalize_to_255();
+    hist_b.normalize_to_255();
+    //subtract and average yadda yadda yadda
+    uint32_t total_difference = 0;
+    for (size_t i = 0; i < hist_a.n_buckets * 3; i++)
+    {
+        total_difference += abs((int32_t)hist_a.raw_buckets[i] - (int32_t)hist_b.raw_buckets[i]);
+    }
+
+    if (draw_hist)
+    {
+        hist_a.draw_in_console_r();
+        hist_b.draw_in_console_r();
+    }
+
+    return double(total_difference) / (double)(hist_a.n_buckets * 3);
+}
 
 
 double histogram_difference_metric_at_pos(sf::Image& base_image, sf::Image& compare_template,
-    uint32_t center_x, uint32_t center_y, uint32_t rect_width, uint32_t rect_height)
+    uint32_t center_x, uint32_t center_y, uint32_t rect_width, uint32_t rect_height, bool draw_hist = false)
 {
     //return compare_template;
     size_t compare_imgs_sz = sizeof(sf::Uint8) * compare_template.getSize().x * compare_template.getSize().y * 4;
@@ -360,35 +408,42 @@ double histogram_difference_metric_at_pos(sf::Image& base_image, sf::Image& comp
     cropped_base_pix_img.create(rect_width, rect_height, cropped_base_pixels);
 
 
-    Histogram hist_a(5);
-    Histogram hist_b(5);
+    Histogram hist_a(4);
+    Histogram hist_b(4);
 
+    if (draw_hist)
+    {
+        draw_img_in(cropped_base_pix_img);
+    }
 
     size_t sum_px_diff = 0;
     for (size_t i = 0; i < compare_imgs_sz; i += 4)
     {
 
         hist_a.add_color_to_buckets(
-            tplt_pixels_ptr[i] + 0,
-            tplt_pixels_ptr[i] + 1,
-            tplt_pixels_ptr[i] + 2);
+            tplt_pixels_ptr[i + 0] ,
+            tplt_pixels_ptr[i + 1],
+            tplt_pixels_ptr[i + 2]);
 
         hist_b.add_color_to_buckets(
-            cropped_base_pixels[i] + 0,
-            cropped_base_pixels[i] + 1,
-            cropped_base_pixels[i] + 2);
+            cropped_base_pixels[i + 0],
+            cropped_base_pixels[i + 1],
+            cropped_base_pixels[i + 2]);
     }
 
+
+    //hist_a.draw_in_console();
+
     
-    double avg_hist_diff = average_histogram_difference(hist_a, hist_b);
+    double avg_hist_diff = average_histogram_difference(hist_a, hist_b, draw_hist);
     
     //necessary asf
     free(cropped_base_pixels);
     free(hist_a.raw_buckets);
     free(hist_b.raw_buckets);
 
-
-    return (double)sum_px_diff / (double)compare_imgs_sz;
+    return avg_hist_diff;
+   
 
 }
 
@@ -411,6 +466,9 @@ sf::Vector2i search_region_for_match(sf::Image& base_image, sf::Image& target_te
 
     size_t search_begin_x = region_center_x - region_width / 2;
     size_t search_begin_y = region_center_y - region_height / 2; 
+    
+    //size_t search_begin_x = region_center_x;
+    //size_t search_begin_y = region_center_y; 
 
     for (int x_segment_idx = 0; x_segment_idx < x_seg_cnt; x_segment_idx++)
     {
@@ -420,6 +478,10 @@ sf::Vector2i search_region_for_match(sf::Image& base_image, sf::Image& target_te
             int32_t compare_y_pos = search_begin_y + y_seg_px_height * y_segment_idx;
           //  std::cout << "Checking: (" << region_center_x + compare_x_offset << ", " << region_center_y + compare_y_offset << ")\n";
 
+
+            //histogram_difference_metric_at_pos
+            //difference_metric_at_pos
+            //
             double cur_diff = difference_metric_at_pos(
                 base_image, target_template,
                 compare_x_pos, 
@@ -435,11 +497,27 @@ sf::Vector2i search_region_for_match(sf::Image& base_image, sf::Image& target_te
                 best_match_center_position = sf::Vector2i(
                     compare_x_pos,
                     compare_y_pos);
+       
+               
+
+
             }
         }
      
     }
-    std::cout << "Match Difference: " << smallest_difference << "\n";
+
+  /*
+   double cur_diff = histogram_difference_metric_at_pos(
+            base_image, target_template,
+            best_match_center_position.x,
+            best_match_center_position.y,
+            target_template.getSize().x,
+            target_template.getSize().y, true);
+            */
+    //std::cout << "Match Position: " << best_match_center_position.x << ", " << best_match_center_position.y << "\n";
+
+
+    //std::cout << "Match Difference: " << smallest_difference << "\n";
     return best_match_center_position;
      
     
