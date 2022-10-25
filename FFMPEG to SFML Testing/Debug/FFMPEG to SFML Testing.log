@@ -1,0 +1,3 @@
+﻿  FFMPEG to SFML Testing.cpp
+C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(6,1): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  FFMPEG to SFML Testing.vcxproj -> C:\Users\aspen\Desktop\XTracker\Debug\FFMPEG to SFML Testing.exe

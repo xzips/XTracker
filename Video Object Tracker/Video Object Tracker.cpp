@@ -2,37 +2,23 @@
 #include <iostream>
 #include "image_pixel_manipulation.h"
 #include <vector>
-constexpr size_t WINDOW_WIDTH = 1900;
-constexpr size_t WINDOW_HEIGHT = 1200;
+constexpr size_t WINDOW_WIDTH = 1000;
+constexpr size_t WINDOW_HEIGHT = 700;
 
 
 //returns scale ratio used
-float scale_sprite_to_params(sf::Sprite& s, sf::Texture& tex, float width_margin_min, float height_margin_min)
+float scale_sprite_to_params(sf::Sprite& s, float width, float height, float width_margin_min, float height_margin_min)
 {
 
 
-    float scaling_ratio_height = (float)WINDOW_HEIGHT / (float)tex.getSize().y;
-    float scaling_ratio_width = (float)WINDOW_WIDTH / (float)tex.getSize().x * width_margin_min;
+    float scaling_ratio_height = (float)WINDOW_HEIGHT / height * height_margin_min;
+    float scaling_ratio_width = (float)WINDOW_WIDTH / width * width_margin_min;
 
     float min_scaling = std::min(scaling_ratio_height, scaling_ratio_width);
 
     s.setScale(min_scaling, min_scaling);
     return min_scaling;
 }
-
-
-/*
-sf::Vector2i track_template_into_frame(sf::Image& track_template, sf::Image& current_frame, sf::Vector2i last_track_location, sf::Vector2i last_track_)
-{
-
-
-    sf::Vector2i best_position = search_region_for_match(example_frame_image, rect_img, crop_center_x, crop_center_y, crop_x, crop_y);
-    std::cout << "Best X: " << best_position.x << " ,Best Y: " << best_position.y << "\n";
-
-
-}
-
-*/
 
 
 
@@ -75,49 +61,64 @@ int main()
     //std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
     std::string base_filename = "C:/Users/Aspen/Desktop/XTracker/PendulumFrames/pendulum_frame_";
     
+   
+    sf::Vector2i search_region_size(200, 150);
+    sf::Vector2i template_center(400, 480); //400, 480
+    sf::Vector2i template_size(20, 20); //20, 20
+
     size_t total_n_frames = 30;
 
     load_png_sequence_to_frames(base_filename, total_n_frames);
     
+    sf::Vector2i search_region_center = template_center;
+
 
     //sf::Texture CurrentFrameTexture;
     sf::Sprite  CurrentFrameSprite;
     sf::Sprite  CurrentTemplateSprite;
+    sf::Sprite  CurrentFrameTrackSprite;
+
+
+    sf::Texture CurrentFrameTrackTexture;
+    float CurrentFrameTrackScale = scale_sprite_to_params(CurrentFrameTrackSprite,
+        template_size.x, template_size.y, 0.2, 1);
+
+    CurrentFrameTrackSprite.setPosition(WINDOW_WIDTH - CurrentFrameTrackScale * template_size.x,
+        CurrentFrameTrackScale * template_size.y);
+
+
+
+    CurrentFrameTrackTexture.create(template_size.x, template_size.y);
 
     //draw_img_in(frames_img_array[0]);
 
     CurrentFrameSprite.setTexture(frames_tex_array[0]);
 
-    float CurrentFrameScale = scale_sprite_to_params(CurrentFrameSprite, frames_tex_array[0], 0.8, 1);
-   
-    
+
+    float CurrentFrameScale = scale_sprite_to_params(CurrentFrameSprite,
+        frames_tex_array[0].getSize().x, frames_tex_array[0].getSize().y, 0.8, 1);
+
 
 
 
     bool right_pressed = false;
     bool left_clicked = false;
-   // bool right_pressed = false;
+ 
     size_t current_frame_idx = 0;
-
-    sf::Vector2i search_region_center(390, 470);
-    sf::Vector2i search_region_size(200, 150);
-
-    //400, 480
-    sf::Vector2i template_center(400, 480);
-    //20, 20
-    sf::Vector2i template_size(20, 20);
-
-
 
     //make into function maybe
     sf::Image rect_img = extract_rectangle_as_image(frames_tex_array[0], template_center.x, template_center.y,
         template_size.x, template_size.y);
 
+
     sf::Texture cropped_tex;
     cropped_tex.create(template_size.x, template_size.y);
     cropped_tex.loadFromImage(rect_img);
     sf::Sprite extracted_sprite;
-    float extract_scale = scale_sprite_to_params(extracted_sprite, cropped_tex, 0.2, 1);
+    
+    float extract_scale = scale_sprite_to_params(extracted_sprite,
+        cropped_tex.getSize().x, cropped_tex.getSize().y, 0.2, 1);
+
     extracted_sprite.setTexture(cropped_tex);
     extracted_sprite.setPosition(WINDOW_WIDTH - extract_scale * template_size.x, 0);
 
@@ -137,7 +138,6 @@ int main()
                 {
                     window.close();
                 }
-
             }
         }
 
@@ -159,6 +159,20 @@ int main()
 
                 search_region_center = template_center;
 
+
+
+
+
+                sf::Image current_frame_extract = extract_rectangle_as_image(
+                    frames_tex_array[current_frame_idx], template_center.x, template_center.y,
+                    template_size.x, template_size.y);
+               
+                //draw_img_in(current_frame_extract);
+
+                CurrentFrameTrackTexture.create(template_size.x, template_size.y);
+                CurrentFrameTrackTexture.loadFromImage(current_frame_extract);
+                CurrentFrameTrackSprite.setTexture(CurrentFrameTrackTexture);
+
                 //set new
                 //rect_img = extract_rectangle_as_image(frames_tex_array[current_frame_idx], template_center.x, template_center.y,
                 //   template_size.x, template_size.y);
@@ -166,9 +180,7 @@ int main()
                // cropped_tex.create(template_size.x, template_size.y);
                // cropped_tex.loadFromImage(rect_img);
                 //extracted_sprite.setTexture(cropped_tex);
-               // extracted_sprite.setPosition(WINDOW_WIDTH - extract_scale * template_size.x, 0);
-
-
+               // extracted_sprite.setPosition(WINDOW_WIDTH - ex  tract_scale * template_size.x, 0);
 
             }
             right_pressed = true;
@@ -182,6 +194,7 @@ int main()
         window.clear();
         window.draw(CurrentFrameSprite);
         window.draw(extracted_sprite);
+        window.draw(CurrentFrameTrackSprite);
 
         draw_rectangle_border(window, CurrentFrameScale, template_center.x, template_center.y, template_size.x, template_size.y, 3, sf::Color::Red);
         draw_rectangle_border(window, CurrentFrameScale, search_region_center.x, search_region_center.y, search_region_size.x, search_region_size.y, 3, sf::Color::Blue);
