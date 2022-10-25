@@ -2,6 +2,8 @@
 #include <iostream>
 #include "image_pixel_manipulation.h"
 #include <vector>
+
+#include <chrono>
 constexpr size_t WINDOW_WIDTH = 1000;
 constexpr size_t WINDOW_HEIGHT = 700;
 
@@ -42,20 +44,35 @@ void load_png_sequence_to_frames(std::string pathname_without_number_or_extensio
 
 
         std::string current_image_name = pathname_without_number_or_extension + std::to_string(i) + ".png";
-        if (!frames_img_array[frames_img_array.size() - 1].loadFromFile(current_image_name)
-            || !frames_tex_array[frames_img_array.size() - 1].loadFromFile(current_image_name))
+        
+        if (!frames_img_array[frames_img_array.size() - 1].loadFromFile(current_image_name))
         {
-            std::cout << current_image_name << " failed to load\n";
+            std::cout << current_image_name << " failed to load to image\n";
             exit(-1);
         }
+        /*
+        if ( !frames_tex_array[frames_img_array.size() - 1].loadFromFile(current_image_name))
+        {
+            std::cout << current_image_name << " failed to load texture\n";
+            exit(-1);
+        }
+        */
     }
 }
 
-
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
+using std::chrono::milliseconds;
 
 int main()
 
 {
+    
+    
+ 
+
+
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "XTracker");
 
     //std::string base_filename = "C:/Users/aspen/Desktop/firmware-onboarding/XTracker/PendulumFrames/pendulum_frame_";
@@ -68,8 +85,19 @@ int main()
 
     size_t total_n_frames = 30;
 
+
+    auto t1 = high_resolution_clock::now();
     load_png_sequence_to_frames(base_filename, total_n_frames);
-    
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    duration<double, std::milli> ms_double = t2 - t1;
+    std::cout << ms_double.count() << "ms for 30 frames\n";
+
+
+
+
+
+
     sf::Vector2i search_region_center = template_center;
 
 

@@ -1,45 +1,59 @@
+#include <iostream>
 
-#include <string>
-#include <windows.h>
 
-void main()
+
+unsigned char* ReadBMP(const char* filename)
 {
-    char cmd[] = "ffmpeg -f rawvideo -pix_fmt rgba -video_size 1920x1080 -r 30 -i pipe:0 -preset fast -y -pix_fmt yuv420p output.mp4";
-    int* buffer = (int*)malloc(sizeof(int) *1920 * 1080);
+    int i;
+    FILE* f = fopen(filename, "rb");
 
+    if (f == NULL)
+        throw "Argument Exception";
 
-    HANDLE readPipe;
-    HANDLE writePipe;
+    unsigned char info[54];
+    fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
 
-    SECURITY_ATTRIBUTES sa = { sizeof(sa) };
-    sa.lpSecurityDescriptor = nullptr;
-    sa.bInheritHandle = TRUE;
+    // extract image height and width from header
+    int width = *(int*)&info[18];
+    int height = *(int*)&info[22];
 
-    CreatePipe(&readPipe, &writePipe, &sa, sizeof(buffer));
+    std::cout << std::endl;
+    std::cout << "  Name: " << filename << std::endl;
+    std::cout << " Width: " << width << std::endl;
+    std::cout << "Height: " << height << std::endl;
 
-    SetHandleInformation(writePipe, HANDLE_FLAG_INHERIT, 0);
+    int row_padded = (width * 3 + 3) & (~3);
+    unsigned char* data = new unsigned char[row_padded];
+    unsigned char tmp;
 
-    STARTUPINFOA si = { sizeof(si) };
-    si.dwFlags = STARTF_USESTDHANDLES;
-    si.hStdInput = readPipe;
-    si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-    si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
-
-    PROCESS_INFORMATION pi = {};
-
-    CreateProcessA(nullptr, cmd, nullptr, nullptr, TRUE, 0, nullptr, nullptr, &si, &pi);
-
-    for (int frame = 0; frame < 1080; frame++)
+    for (int i = 0; i < height; i++)
     {
-        for (int x = 0; x < 1920; x++)
+        fread(data, sizeof(unsigned char), row_padded, f);
+        for (int j = 0; j < width * 3; j += 3)
         {
-            buffer[frame * 1920 + x] = 0xffffff00 | (frame * 255 / 1079);
-        }
+            // Convert (B, G, R) to (R, G, B)
+            tmp = data[j];
+            data[j] = data[j + 2];
+            data[j + 2] = tmp;
 
-        DWORD bytesWritten;
-        WriteFile(writePipe, buffer, sizeof(buffer), &bytesWritten, nullptr);
+            std::cout << "R: " << (int)data[j] << " G: " << (int)data[j + 1] << " B: " << (int)data[j + 2] << std::endl;
+        }
     }
 
-    CloseHandle(readPipe);
-    CloseHandle(writePipe);
- }
+    fclose(f);
+    return data;
+}
+
+
+int main(int argc, char** argv) {
+ 
+
+
+    auto img_pixels = ReadBMP("C:/Users/Aspen/Desktop/XTracker/bmp_sample.bmp");
+
+
+    
+
+    return 0;
+
+}
