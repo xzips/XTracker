@@ -1,3 +1,4 @@
 ﻿  FFMPEG to SFML Testing.cpp
-C:\Users\Aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(7,9): warning C4101: 'i': unreferenced local variable
-  FFMPEG to SFML Testing.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\FFMPEG to SFML Testing.exe
+C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(31,32): warning C4018: '<': signed/unsigned mismatch
+C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(35,46): warning C4018: '<': signed/unsigned mismatch
+  FFMPEG to SFML Testing.vcxproj -> C:\Users\aspen\Desktop\XTracker\Debug\FFMPEG to SFML Testing.exe
