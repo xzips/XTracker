@@ -105,7 +105,7 @@ int main(int argc, char** argv)
 
 
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "XTracker - Optimized");
 
     while (window.isOpen())
     {

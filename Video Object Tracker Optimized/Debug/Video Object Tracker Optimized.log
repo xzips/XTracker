@@ -1,0 +1,4 @@
+﻿  Video Object Tracker Optimized.cpp
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageFileProcessing.h(45,46): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(50,33): warning C4305: 'argument': truncation from 'double' to 'float'
+  Video Object Tracker Optimized.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\Video Object Tracker Optimized.exe

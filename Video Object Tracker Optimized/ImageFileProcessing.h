@@ -46,6 +46,7 @@ void ReadBMP_To_RGBA_Ptr(unsigned char* data_ptr, const char* filename, const si
         {
             size_t transformed_img_c_pix_ptr = (4 * (row * width + col_indx)) + offset;
 
+            //uint64_t hypothetical_index = 
             data_ptr[transformed_img_c_pix_ptr + 0] = row_pxs[col_indx * 3 + 2]; //BGR not RGB
             data_ptr[transformed_img_c_pix_ptr + 1] = row_pxs[col_indx * 3 + 1];
             data_ptr[transformed_img_c_pix_ptr + 2] = row_pxs[col_indx * 3 + 0];
@@ -92,12 +93,16 @@ begin_file_index could be 7
 n_images could be 4
 img_7.bmp, img_8.bmp, img_9.bmp, img_10.bmp will be loaded into memory
 */
-void load_bmp_sequence_to_memory(unsigned char *pixels_memory_ptr, const std::string base_filepath,
+void LoadBmpSequenceToMemory(unsigned char *pixels_memory_ptr, const std::string base_filepath,
     const uint32_t begin_file_index, const uint32_t n_images)
 {
-    
-    for (uint32_t load_index = 0; load_index < n_images + n_images; load_index++)
+
+    const auto img_dims = GetBmpDims((base_filepath + std::to_string(begin_file_index) + ".bmp").c_str());
+    const size_t offset_sz = img_dims.x * img_dims.y * 4;
+
+    for (uint32_t load_index = 0; load_index < n_images; load_index++)
     {
-        std::string current_image_filepath = base_filepath
+        std::string current_image_filepath = base_filepath + std::to_string(load_index + begin_file_index) + ".bmp";
+        ReadBMP_To_RGBA_Ptr(pixels_memory_ptr, current_image_filepath.c_str(), offset_sz * load_index);
     }
 }
