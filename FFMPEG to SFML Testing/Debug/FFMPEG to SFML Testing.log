@@ -1,4 +1,4 @@
 ﻿  FFMPEG to SFML Testing.cpp
-C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(31,32): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(35,46): warning C4018: '<': signed/unsigned mismatch
+C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(25,46): warning C4018: '<': signed/unsigned mismatch
+C:\Users\aspen\Desktop\XTracker\FFMPEG to SFML Testing\FFMPEG to SFML Testing.cpp(104,33): warning C4305: 'argument': truncation from 'double' to 'float'
   FFMPEG to SFML Testing.vcxproj -> C:\Users\aspen\Desktop\XTracker\Debug\FFMPEG to SFML Testing.exe

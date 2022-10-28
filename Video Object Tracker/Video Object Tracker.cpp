@@ -50,13 +50,13 @@ void load_png_sequence_to_frames(std::string pathname_without_number_or_extensio
             std::cout << current_image_name << " failed to load to image\n";
             exit(-1);
         }
-        /*
+        
         if ( !frames_tex_array[frames_img_array.size() - 1].loadFromFile(current_image_name))
         {
             std::cout << current_image_name << " failed to load texture\n";
             exit(-1);
         }
-        */
+        
     }
 }
 
@@ -91,7 +91,7 @@ int main()
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     duration<double, std::milli> ms_double = t2 - t1;
-    std::cout << ms_double.count() << "ms for 30 frames\n";
+    std::cout << ms_double.count() << "ms for " << total_n_frames << " frames\n";
 
 
 
@@ -176,14 +176,24 @@ int main()
             if (true && current_frame_idx < total_n_frames - 1)
             {
                 current_frame_idx++;
-                std::cout << "Frame Advanced to: " << current_frame_idx << std::endl;
+                //std::cout << "Frame Advanced to: " << current_frame_idx << std::endl;
                
                 CurrentFrameSprite.setTexture(frames_tex_array[current_frame_idx]);
+
+                t1 = high_resolution_clock::now();
 
 
                 template_center = search_region_for_match(
                     frames_img_array[current_frame_idx], rect_img,
                     template_center.x, template_center.y, search_region_size.x, search_region_size.y);
+
+
+                t2 = high_resolution_clock::now();
+                ms_int = duration_cast<milliseconds>(t2 - t1);
+                duration<double, std::milli> ms_double = t2 - t1;
+                std::cout << "Tracking into frame " << current_frame_idx
+                    << " took " << ms_double.count() << "ms\n";
+
 
                 search_region_center = template_center;
 
