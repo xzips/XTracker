@@ -133,6 +133,7 @@
     <ClCompile Include="Video Object Tracker Optimized.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApplicationInterface.h" />
     <ClInclude Include="ImageAnalysis.h" />
     <ClInclude Include="ImageDebuggingTools.h" />
     <ClInclude Include="ImageFileProcessing.h" />

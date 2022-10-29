@@ -22,28 +22,39 @@ Reimplement forward tracking
 
 void XTrackerMain()
 {
+    //load images into buffer
     std::string base_path = "C:/Users/Aspen/Desktop/XTracker/BmpFrames/output";
-    size_t n_images = 100;
+    size_t n_images = 10;
     auto img_dims = GetBmpDims((base_path + "1.bmp").c_str());
-    auto t1 = high_resolution_clock::now();
-
     const size_t pix_mem_img_sz = img_dims.x * img_dims.y * 4;
-
     sf::Uint8* frame_pixel_buffer = (sf::Uint8*)malloc(pix_mem_img_sz * n_images);
-
-
     LoadBmpSequenceToMemory(frame_pixel_buffer, base_path, 1, n_images);
 
+    
+    uint32_vec2d track_position_center(500, 300);
+    uint32_vec2d track_size(30, 30);    
 
-    sf::Uint8* track_template_pixels = (sf::Uint8*)malloc(100 * 100 * 4);
-    PixelRegion template_pixel_region(500, 300, 100, 100, 1280, 720);
+    sf::Uint8* track_template_pixels = (sf::Uint8*)malloc(track_size.x * track_size.y * 4);
+
+    PixelRegion template_pixel_region(
+        track_position_center.x, track_position_center.y,
+        track_size.x, track_size.y, img_dims.x, img_dims.y);
+
     extract_region_pixels(frame_pixel_buffer, track_template_pixels, template_pixel_region);
 
-
-    //d_draw_pixels(track_template_pixels, template_pixel_region.region_width, template_pixel_region.region_height);
-
+    d_draw_pixels(track_template_pixels, template_pixel_region.region_width, template_pixel_region.region_height);
 
 
+    sf::Texture current_frame_preview_tex;
+    sf::Sprite current_frame_preview_sprite;
+    double frame_scaling
+
+
+    current_frame_preview_tex.create(img_dims.x, img_dims.y);
+    //Implictily loads the first image
+    current_frame_preview_tex.update(frame_pixel_buffer);
+
+   
 
 
     sf::RenderWindow window(sf::VideoMode(
@@ -81,10 +92,11 @@ void XTrackerMain()
 
 int main(int argc, char** argv)
 {
-    if (argc < 2) std::cout << "Not enough arguments, use -help for usage" << std::endl;
+   // if (argc < 2) std::cout << "Not enough arguments, use -help for usage" << std::endl;
 
+    XTrackerMain();
 
-
+    return 0;
 
     if (std::string(argv[1]) == "-h")
     {
@@ -97,13 +109,10 @@ int main(int argc, char** argv)
             "-u [ANGLE UNITS] (Optional, default=deg) Angle units for export, can be either \"deg\" or \"rad\"\n\n"
             "-m [MAX MEMORY(MB)] (Optional, default=2000) Max RAM and disk usage, higher values may improve performance\n\n"
             "-p [PRECISION(int)] (Optional, default=1) Pixel tracking precision, higher values proportionally increase performance, and decrease precision\n\n";
-            
-
+            "-dev ONLY USED BY DEVS, IT WILL ERROR FOR YOU!\n\n";
     }
 
     
-   // std::cout << argv[2] << std::endl;
-
 
 
    // XTrackerMain();
