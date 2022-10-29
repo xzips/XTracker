@@ -3,52 +3,6 @@
 
 
 
-sf::Image extract_rectangle_as_image(const sf::Texture& tex, size_t center_x, size_t center_y, size_t rect_width, size_t rect_height)
-{
-    sf::Image extracted_image;
-    sf::Image full_image = tex.copyToImage();
-
-    //fix this lol
-    center_x -= rect_width >> 1;
-    center_y -= rect_height >> 1;
-
-
-    //check this
-    size_t extracted_img_buff_sz = sizeof(sf::Uint8) * rect_width * rect_height * 4;
-    sf::Uint8* extracted_image_pixels = (sf::Uint8*)malloc(extracted_img_buff_sz);
-    if (extracted_image_pixels == nullptr)
-    {
-        std::cout << "somebody(I) fucked up memory management and now we can't have nice things, contact the dev" << std::endl;
-    }
-
-
-
-    const sf::Uint8* original_image_p_buffer = full_image.getPixelsPtr();
-
-    size_t cur_loc_in_extr_pix = 0;
-
-    size_t numPixels = full_image.getSize().x * full_image.getSize().y * 4;
-    //for each row, find out where the fuck we are and memcpy pixels 
-    for (size_t row = 0; row < rect_height; ++row)
-    {
-        size_t row_begin_indx = ((row + center_y) * tex.getSize().x + center_x) * 4;
-
-
-        sf::Uint8* dst_addr = extracted_image_pixels + cur_loc_in_extr_pix;
-
-        if (dst_addr == nullptr) exit(-1);
-
-        memcpy(dst_addr, original_image_p_buffer + row_begin_indx, 4 * rect_width);
-
-        cur_loc_in_extr_pix += rect_width * 4;
-    }
-
-    extracted_image.create(rect_width, rect_height, extracted_image_pixels);
-    free(extracted_image_pixels);
-
-    return extracted_image;
-
-}
 
 
 //NO ERROR CHECKING, INPUTS BETTER BE VALID!!! :(
@@ -56,93 +10,133 @@ double difference_metric_at_pos(const sf::Uint8 *base_pixels_ptr, const sf::Uint
     const uint32_t center_x, const uint32_t center_y, const uint32_t rect_width, const uint32_t rect_height,
     const uint32_t base_width, const uint32_t base_height)
 {
-    //for each row, find out where the fuck we are and compare pixels 
+    uint64_t cumulative_abs_diff = 0;
+    //for each row, find out where the fuck we are and compare pixels efficiently
     for (size_t rect_row = 0; rect_row < rect_height; ++rect_row)
     {
         for (size_t rect_col = 0; rect_col < rect_width; rect_col++)
         {
-            const size_t base_row_indx = (rect_row + center_y) - (rect_width >> 1);
+            const size_t base_row_indx = rect_row + (center_y - (rect_width >> 1));
+            const size_t base_col_indx = rect_col + (center_x - (rect_height >> 1));
             
-            const size_t base_pixels_px_index = (rect_col * 4) + base_row_indx * base_width * 4;
+            const size_t base_pixels_px_index = (base_row_indx * base_width + base_col_indx) * 4;
+            const size_t template_pixels_px_index = (rect_row * rect_width + rect_col) * 4;;
 
-            const size_t template_pixels_px_index = (rect_col * 4) + rect_row * rect_width * 4;;
-
-
-
-
-
-
-
-
-
-
+            cumulative_abs_diff += abs(base_pixels_ptr[base_pixels_px_index + 0] - template_pixels_ptr[template_pixels_px_index + 0]);
+            cumulative_abs_diff += abs(base_pixels_ptr[base_pixels_px_index + 1] - template_pixels_ptr[template_pixels_px_index + 1]);
+            cumulative_abs_diff += abs(base_pixels_ptr[base_pixels_px_index + 2] - template_pixels_ptr[template_pixels_px_index + 2]);
+            cumulative_abs_diff += abs(base_pixels_ptr[base_pixels_px_index + 3] - template_pixels_ptr[template_pixels_px_index + 3]);
+        }
+    }
+    return (double)cumulative_abs_diff / (double)(rect_width * rect_height * 4);
+}
 
 
 
+struct PixelRegion
+{
+    uint32_t region_center_x;
+    uint32_t region_center_y;
+    uint32_t region_width;
+    uint32_t region_height;
+    uint32_t base_width;
+    uint32_t base_height;
+    PixelRegion(
+        const uint32_t region_center_x, const uint32_t region_center_y,
+        const uint32_t region_width, const uint32_t region_height,
+        const uint32_t base_width, const uint32_t base_height)
+    {
+        this->region_center_x = region_center_x;
+        this->region_center_y = region_center_y;
+        this->region_width = region_width;
+        this->region_height = region_height;
+        this->base_width = base_width;
+        this->base_height = base_height;
+    }
+
+    PixelRegion()
+    {
+        this->region_center_x = 0;
+        this->region_center_y = 0;
+        this->region_width = 0;
+        this->region_height = 0;
+        this->base_width = 0;
+        this->base_height = 0;
+    }
 
 
+};
 
+void extract_region_pixels(const sf::Uint8* src_pixels, sf::Uint8* dst_pixels, const PixelRegion r)
+{
+    for (size_t rect_row = 0; rect_row < r.region_height; ++rect_row)
+    {
+        for (size_t rect_col = 0; rect_col < r.region_width; rect_col++)
+        {
+            const size_t base_row_indx = rect_row + (r.region_center_y - (r.region_width >> 1));
+            const size_t base_col_indx = rect_col + (r.region_center_x - (r.region_height >> 1));
 
+            const size_t base_pixels_px_index = (base_row_indx * r.base_width + base_col_indx) * 4;
+            const size_t template_pixels_px_index = (rect_row * r.region_width + rect_col) * 4;;
 
-
-
-
-
-
-
-
-                
-
-
+            dst_pixels[template_pixels_px_index + 0] = src_pixels[base_pixels_px_index + 0];
+            dst_pixels[template_pixels_px_index + 1] = src_pixels[base_pixels_px_index + 1];
+            dst_pixels[template_pixels_px_index + 2] = src_pixels[base_pixels_px_index + 2];
+            dst_pixels[template_pixels_px_index + 3] = src_pixels[base_pixels_px_index + 3];
 
         }
-     
     }
+}
 
 
 
 
 
 
+//returns the centered position of the best found match
+sf::Vector2i search_region_for_match(
+    const sf::Uint8* base_pixels_ptr, const sf::Uint8* template_pixels_ptr,
+    const uint32_t region_center_x,   const uint32_t region_center_y,
+    const uint32_t region_width,      const uint32_t region_height,
+    const uint32_t base_width,        const uint32_t base_height)
+{
+    double smallest_difference = INFINITY;
+    sf::Vector2i best_match_center_position;
+    
+    //for example: 1 checks every single possible location, while 3 checks every 3 locations in a grid
+    size_t search_precision = 1;
 
 
+    size_t search_begin_x = region_center_x - region_width / 2;
+    size_t search_begin_y = region_center_y - region_height / 2;
 
-
-
-    //return compare_template;
-    size_t compare_imgs_sz = sizeof(sf::Uint8) * compare_template.getSize().x * compare_template.getSize().y * 4;
-
-    //THIS MUST BE FREED LATER!!!!!
-    //EXPERIMENT WITH USING IMAGE INSTEAD OF PIXELS???
-    sf::Uint8* cropped_base_pixels = extract_rectangle_pixels_from_image(base_image,
-        center_x, center_y, rect_width, rect_height);
-
-    const sf::Uint8* tplt_pixels_ptr = compare_template.getPixelsPtr();
-
-
-
-    sf::Image cropped_base_pix_img;
-    cropped_base_pix_img.create(rect_width, rect_height, cropped_base_pixels);
-
-
-    //draw_img_in(compare_template);
-   // draw_img_in(cropped_base_pix_img);
-
-    size_t sum_px_diff = 0;
-    for (size_t i = 0; i < compare_imgs_sz; i += 4)
+    for (int x_segment_idx = 0; x_segment_idx < search_precision; x_segment_idx++)
     {
-        //just rgb and skip alpha
-        sum_px_diff += square_pixel_difference_f(tplt_pixels_ptr[i], cropped_base_pixels[i]);
-        //sum_px_diff += abs(tplt_pixels_ptr[i] - cropped_base_pixels[i]);
-        sum_px_diff += square_pixel_difference_f(tplt_pixels_ptr[i + 1], cropped_base_pixels[i + 1]);
-        // sum_px_diff += abs(tplt_pixels_ptr[i+1] - cropped_base_pixels[i+1]);
-        sum_px_diff += square_pixel_difference_f(tplt_pixels_ptr[i + 2], cropped_base_pixels[i + 2]);
-        // sum_px_diff += abs(tplt_pixels_ptr[i+2] - cropped_base_pixels[i+2]);
+        for (int y_segment_idx = 0; y_segment_idx < search_precision; y_segment_idx++)
+        {
+            int32_t compare_x_pos = search_begin_x + search_precision * x_segment_idx;
+            int32_t compare_y_pos = search_begin_y + search_precision * y_segment_idx;
+
+            double cur_diff = difference_metric_at_pos(
+                base_pixels_ptr, template_pixels_ptr,
+                compare_x_pos,
+                compare_y_pos, 
+                region_width,
+                region_height,
+                base_width,
+                base_height);
+
+            if (cur_diff < smallest_difference)
+            {
+                smallest_difference = cur_diff;
+                best_match_center_position = sf::Vector2i(
+                    compare_x_pos,
+                    compare_y_pos);
+
+            }
+        }
     }
-
-    free(cropped_base_pixels);
-
-
-    return (double)sum_px_diff / (double)compare_imgs_sz;
+  
+    return best_match_center_position;
 
 }

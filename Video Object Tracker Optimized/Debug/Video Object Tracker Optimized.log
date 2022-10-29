@@ -1,4 +1,7 @@
 ﻿  Video Object Tracker Optimized.cpp
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageFileProcessing.h(45,46): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(50,33): warning C4305: 'argument': truncation from 'double' to 'float'
-  Video Object Tracker Optimized.vcxproj -> C:\Users\aspen\Desktop\XTracker\Debug\Video Object Tracker Optimized.exe
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageFileProcessing.h(45,46): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageAnalysis.h(113,47): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageAnalysis.h(115,51): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(51,48): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(50,47): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+  Video Object Tracker Optimized.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\Video Object Tracker Optimized.exe
