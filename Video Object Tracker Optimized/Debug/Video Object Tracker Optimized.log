@@ -1,7 +1,24 @@
 ﻿  Video Object Tracker Optimized.cpp
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageFileProcessing.h(45,46): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageAnalysis.h(113,47): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageAnalysis.h(115,51): warning C4018: '<': signed/unsigned mismatch
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(51,48): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
-C:\Users\aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(50,47): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
-  Video Object Tracker Optimized.vcxproj -> C:\Users\aspen\Desktop\XTracker\Debug\Video Object Tracker Optimized.exe
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageFileProcessing.h(46,46): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageFileProcessing.h(122,15): warning C4834: discarding return value of function with 'nodiscard' attribute
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageAnalysis.h(113,47): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ImageAnalysis.h(115,51): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\ApplicationInterface.h(32,30): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(34,48): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(33,47): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(69,41): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(69,29): warning C4244: 'argument': conversion from 'uint32_t' to 'float', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(69,17): warning C4244: 'argument': conversion from 'uint32_t' to 'float', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(68,45): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(68,25): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(110,74): warning C4244: '=': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Aspen\Desktop\XTracker\Video Object Tracker Optimized\Video Object Tracker Optimized.cpp(111,74): warning C4244: '=': conversion from 'float' to 'uint32_t', possible loss of data
+  Video Object Tracker Optimized.vcxproj -> C:\Users\Aspen\Desktop\XTracker\Debug\Video Object Tracker Optimized.exe

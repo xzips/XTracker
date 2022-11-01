@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <string>
+#include <future>
 
 struct uint32_vec2d
 {
@@ -105,4 +106,18 @@ void LoadBmpSequenceToMemory(unsigned char *pixels_memory_ptr, const std::string
         std::string current_image_filepath = base_filepath + std::to_string(load_index + begin_file_index) + ".bmp";
         ReadBMP_To_RGBA_Ptr(pixels_memory_ptr, current_image_filepath.c_str(), offset_sz * load_index);
     }
+}
+
+
+
+void ffmpeg_async_call_video2bmp(std::string ffmpeg_exe_path, std::string src_path, std::string dst_path, size_t frame_begin, size_t frame_end)
+{
+    //ffmpeg -i earth_video.mp4 -vf select='between(n\,22,29)' output%d.bmp 
+    std::string command = ffmpeg_exe_path + " -i " + src_path +
+        " -vf select='between(n\\," + std::to_string(frame_begin) +
+        "," + std::to_string(frame_end) + ")' " + dst_path +"frame%d.bmp";
+
+   // std::cout << "command: " << command << std::endl;
+
+    std::async(system, command.c_str());
 }

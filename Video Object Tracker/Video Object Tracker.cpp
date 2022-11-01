@@ -79,9 +79,9 @@ int main()
     std::string base_filename = "C:/Users/Aspen/Desktop/XTracker/PendulumFrames/pendulum_frame_";
     
    
-    sf::Vector2i search_region_size(200, 150);
+    sf::Vector2i search_region_size(50, 50);
     sf::Vector2i template_center(400, 480); //400, 480
-    sf::Vector2i template_size(20, 20); //20, 20
+    sf::Vector2i template_size(30, 30); //20, 20
 
     size_t total_n_frames = 30;
 
